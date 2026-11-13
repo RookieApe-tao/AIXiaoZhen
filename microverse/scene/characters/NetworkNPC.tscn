@@ -1,0 +1,30 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://script/net/NetworkNPC.gd" id="1_npc"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_npc"]
+radius = 8.0
+height = 32.0
+
+[node name="NetworkNPC" type="CharacterBody2D"]
+motion_mode = 1
+collision_layer = 0
+collision_mask = 1
+script = ExtResource("1_npc")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 8)
+shape = SubResource("CapsuleShape2D_npc")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+enabled = false
+
+[node name="NameLabel" type="Label" parent="."]
+offset_left = -80.0
+offset_top = 24.0
+offset_right = 80.0
+offset_bottom = 40.0
+horizontal_alignment = 1
+text = "NPC"

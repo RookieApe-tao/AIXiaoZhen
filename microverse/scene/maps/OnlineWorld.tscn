@@ -1,0 +1,961 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://script/net/OnlineWorld.gd" id="1_ow"]
+
+[node name="OnlineWorld" type="Node2D"]
+script = ExtResource("1_ow")
+
+[node name="UICanvas" type="CanvasLayer" parent="."]
+
+[node name="side_panel" type="Panel" parent="UICanvas"]
+visible = false
+anchor_bottom = 1.0
+offset_top = 72.0
+offset_right = 460.0
+offset_bottom = -128.0
+
+[node name="side_handle" type="Control" parent="UICanvas/side_panel"]
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -5.0
+offset_right = 4.0
+mouse_default_cursor_shape = 10
+
+[node name="top_bar" type="HBoxContainer" parent="UICanvas"]
+anchor_right = 1.0
+offset_left = 20.0
+offset_top = 20.0
+offset_right = -20.0
+offset_bottom = 60.0
+theme_override_constants/separation = 16
+
+[node name="status_label" type="Label" parent="UICanvas/top_bar"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = ""
+autowrap_mode = 3
+
+[node name="game_clock_label" type="Label" parent="UICanvas/top_bar"]
+layout_mode = 2
+custom_minimum_size = Vector2(240, 0)
+text = "🕐 --:--"
+horizontal_alignment = 2
+
+[node name="bottom_bar" type="HBoxContainer" parent="UICanvas"]
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = -64.0
+offset_right = -20.0
+offset_bottom = -16.0
+theme_override_constants/separation = 10
+
+[node name="bottom_content" type="HBoxContainer" parent="UICanvas"]
+visible = false
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = -120.0
+offset_right = -20.0
+offset_bottom = -72.0
+theme_override_constants/separation = 8
+
+[node name="chat_input" type="LineEdit" parent="UICanvas"]
+visible = false
+placeholder_text = "输入要说的话，回车发送（Esc 取消）"
+custom_minimum_size = Vector2(600, 40)
+
+[node name="status_hud" type="Panel" parent="UICanvas"]
+visible = false
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -220.0
+offset_top = 72.0
+offset_right = -20.0
+offset_bottom = 292.0
+
+[node name="VBox" type="VBoxContainer" parent="UICanvas/status_hud"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = -8.0
+offset_bottom = -8.0
+
+[node name="mood_label" type="Label" parent="UICanvas/status_hud/VBox"]
+text = "心情"
+
+[node name="mood_bar" type="ProgressBar" parent="UICanvas/status_hud/VBox"]
+custom_minimum_size = Vector2(0, 12)
+min_value = 0.0
+max_value = 1.0
+value = 0.6
+
+[node name="money_label" type="Label" parent="UICanvas/status_hud/VBox"]
+text = "金币: 100"
+
+[node name="health_label" type="Label" parent="UICanvas/status_hud/VBox"]
+text = "健康"
+
+[node name="health_bar" type="ProgressBar" parent="UICanvas/status_hud/VBox"]
+custom_minimum_size = Vector2(0, 12)
+min_value = 0.0
+max_value = 1.0
+value = 1.0
+
+[node name="char_panel" type="Panel" parent="UICanvas"]
+visible = false
+custom_minimum_size = Vector2(0, 520)
+
+[node name="Scroll" type="ScrollContainer" parent="UICanvas/char_panel"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+horizontal_scroll_mode = 0
+
+[node name="VBox" type="VBoxContainer" parent="UICanvas/char_panel/Scroll"]
+offset_left = 16.0
+offset_top = 12.0
+offset_right = -16.0
+offset_bottom = -12.0
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="title" type="Label" parent="UICanvas/char_panel/Scroll/VBox"]
+text = "角色设定"
+
+[node name="HSeparator" type="HSeparator" parent="UICanvas/char_panel/Scroll/VBox"]
+
+[node name="l_name" type="Label" parent="UICanvas/char_panel/Scroll/VBox"]
+text = "名字"
+
+[node name="char_name_edit" type="LineEdit" parent="UICanvas/char_panel/Scroll/VBox"]
+custom_minimum_size = Vector2(0, 36)
+
+[node name="l_position" type="Label" parent="UICanvas/char_panel/Scroll/VBox"]
+text = "职位"
+
+[node name="char_position_edit" type="LineEdit" parent="UICanvas/char_panel/Scroll/VBox"]
+custom_minimum_size = Vector2(0, 36)
+placeholder_text = "如：前端开发实习生"
+
+[node name="l_gender" type="Label" parent="UICanvas/char_panel/Scroll/VBox"]
+text = "性别"
+
+[node name="char_gender_edit" type="OptionButton" parent="UICanvas/char_panel/Scroll/VBox"]
+custom_minimum_size = Vector2(0, 40)
+
+[node name="l_personality" type="Label" parent="UICanvas/char_panel/Scroll/VBox"]
+text = "性格"
+
+[node name="char_personality_edit" type="TextEdit" parent="UICanvas/char_panel/Scroll/VBox"]
+custom_minimum_size = Vector2(0, 80)
+placeholder_text = "如：元气满满但毛手毛脚"
+
+[node name="l_speaking_style" type="Label" parent="UICanvas/char_panel/Scroll/VBox"]
+text = "说话风格"
+
+[node name="char_speaking_style_edit" type="TextEdit" parent="UICanvas/char_panel/Scroll/VBox"]
+custom_minimum_size = Vector2(0, 80)
+placeholder_text = "如：语速快，爱用网络热梗"
+
+[node name="l_work_duties" type="Label" parent="UICanvas/char_panel/Scroll/VBox"]
+text = "工作职责"
+
+[node name="char_work_duties_edit" type="TextEdit" parent="UICanvas/char_panel/Scroll/VBox"]
+custom_minimum_size = Vector2(0, 80)
+placeholder_text = "如：切图、修 CSS bug"
+
+[node name="l_work_habits" type="Label" parent="UICanvas/char_panel/Scroll/VBox"]
+text = "工作习惯"
+
+[node name="char_work_habits_edit" type="TextEdit" parent="UICanvas/char_panel/Scroll/VBox"]
+custom_minimum_size = Vector2(0, 80)
+placeholder_text = "如：工位贴满便利贴"
+
+[node name="l_notes" type="Label" parent="UICanvas/char_panel/Scroll/VBox"]
+text = "补充设定（可选）"
+
+[node name="char_notes_edit" type="TextEdit" parent="UICanvas/char_panel/Scroll/VBox"]
+custom_minimum_size = Vector2(0, 100)
+
+[node name="l_byok" type="Label" parent="UICanvas/char_panel/Scroll/VBox"]
+text = "AI 设置（可选，留空用账号全局）"
+
+[node name="char_ai_type_opt" type="OptionButton" parent="UICanvas/char_panel/Scroll/VBox"]
+
+[node name="char_ai_model_edit" type="LineEdit" parent="UICanvas/char_panel/Scroll/VBox"]
+placeholder_text = "模型名，如 deepseek-chat"
+
+[node name="char_ai_key_edit" type="LineEdit" parent="UICanvas/char_panel/Scroll/VBox"]
+secret = true
+placeholder_text = "API Key（留空=不改/清除见说明）"
+
+[node name="char_ai_row" type="HBoxContainer" parent="UICanvas/char_panel/Scroll/VBox"]
+theme_override_constants/separation = 10
+
+[node name="char_ai_clear_btn" type="Button" parent="UICanvas/char_panel/Scroll/VBox/char_ai_row"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "清除角色AI"
+
+[node name="char_ai_save_btn" type="Button" parent="UICanvas/char_panel/Scroll/VBox/char_ai_row"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "保存角色AI"
+
+[node name="btn_row" type="HBoxContainer" parent="UICanvas/char_panel/Scroll/VBox"]
+theme_override_constants/separation = 10
+
+[node name="ai_btn" type="Button" parent="UICanvas/char_panel/Scroll/VBox/btn_row"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "AI 优化"
+
+[node name="save_btn" type="Button" parent="UICanvas/char_panel/Scroll/VBox/btn_row"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "保存"
+
+[node name="close_btn" type="Button" parent="UICanvas/char_panel/Scroll/VBox/btn_row"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "关闭"
+
+[node name="status_edit_panel" type="Panel" parent="UICanvas"]
+visible = false
+custom_minimum_size = Vector2(0, 200)
+
+[node name="VBox" type="VBoxContainer" parent="UICanvas/status_edit_panel"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = 12.0
+offset_right = -16.0
+offset_bottom = -12.0
+theme_override_constants/separation = 8
+
+[node name="title" type="Label" parent="UICanvas/status_edit_panel/VBox"]
+text = "改 NPC 状态"
+
+[node name="HSeparator" type="HSeparator" parent="UICanvas/status_edit_panel/VBox"]
+
+[node name="status_edit_sel_label" type="Label" parent="UICanvas/status_edit_panel/VBox"]
+text = "选中：无"
+
+[node name="mood_row" type="HBoxContainer" parent="UICanvas/status_edit_panel/VBox"]
+
+[node name="ml" type="Label" parent="UICanvas/status_edit_panel/VBox/mood_row"]
+layout_mode = 2
+custom_minimum_size = Vector2(50, 0)
+text = "心情"
+
+[node name="status_edit_mood" type="HSlider" parent="UICanvas/status_edit_panel/VBox/mood_row"]
+layout_mode = 2
+size_flags_horizontal = 3
+custom_minimum_size = Vector2(0, 28)
+min_value = 0.0
+max_value = 1.0
+step = 0.05
+value = 0.6
+
+[node name="health_row" type="HBoxContainer" parent="UICanvas/status_edit_panel/VBox"]
+
+[node name="hl" type="Label" parent="UICanvas/status_edit_panel/VBox/health_row"]
+layout_mode = 2
+custom_minimum_size = Vector2(50, 0)
+text = "健康"
+
+[node name="status_edit_health" type="HSlider" parent="UICanvas/status_edit_panel/VBox/health_row"]
+layout_mode = 2
+size_flags_horizontal = 3
+custom_minimum_size = Vector2(0, 28)
+min_value = 0.0
+max_value = 1.0
+step = 0.05
+value = 1.0
+
+[node name="money_row" type="HBoxContainer" parent="UICanvas/status_edit_panel/VBox"]
+
+[node name="ml2" type="Label" parent="UICanvas/status_edit_panel/VBox/money_row"]
+layout_mode = 2
+custom_minimum_size = Vector2(50, 0)
+text = "金币"
+
+[node name="status_edit_money" type="SpinBox" parent="UICanvas/status_edit_panel/VBox/money_row"]
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = 0.0
+max_value = 1000000.0
+step = 10.0
+value = 100.0
+
+[node name="btn_row" type="HBoxContainer" parent="UICanvas/status_edit_panel/VBox"]
+theme_override_constants/separation = 10
+
+[node name="apply_btn" type="Button" parent="UICanvas/status_edit_panel/VBox/btn_row"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "应用"
+
+[node name="close_btn" type="Button" parent="UICanvas/status_edit_panel/VBox/btn_row"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "关闭"
+
+[node name="task_panel" type="Panel" parent="UICanvas"]
+visible = false
+custom_minimum_size = Vector2(0, 460)
+
+[node name="VBox" type="VBoxContainer" parent="UICanvas/task_panel"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = 12.0
+offset_right = -16.0
+offset_bottom = -12.0
+theme_override_constants/separation = 8
+
+[node name="title" type="Label" parent="UICanvas/task_panel/VBox"]
+text = "任务列表"
+
+[node name="HSeparator" type="HSeparator" parent="UICanvas/task_panel/VBox"]
+
+[node name="btn_row" type="HBoxContainer" parent="UICanvas/task_panel/VBox"]
+theme_override_constants/separation = 10
+
+[node name="pub_btn" type="Button" parent="UICanvas/task_panel/VBox/btn_row"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "发布任务"
+
+[node name="refresh_btn" type="Button" parent="UICanvas/task_panel/VBox/btn_row"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "刷新"
+
+[node name="close_btn" type="Button" parent="UICanvas/task_panel/VBox/btn_row"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "关闭"
+
+[node name="task_publish_form" type="VBoxContainer" parent="UICanvas/task_panel/VBox"]
+visible = false
+custom_minimum_size = Vector2(0, 40)
+theme_override_constants/separation = 8
+
+[node name="tl" type="Label" parent="UICanvas/task_panel/VBox/task_publish_form"]
+text = "标题:"
+
+[node name="task_title_edit" type="LineEdit" parent="UICanvas/task_panel/VBox/task_publish_form"]
+placeholder_text = "任务标题"
+
+[node name="rl" type="Label" parent="UICanvas/task_panel/VBox/task_publish_form"]
+text = "奖励金币:"
+
+[node name="task_reward_edit" type="LineEdit" parent="UICanvas/task_panel/VBox/task_publish_form"]
+text = "0"
+
+[node name="pl" type="Label" parent="UICanvas/task_panel/VBox/task_publish_form"]
+text = "优先级:"
+
+[node name="task_pri_opt" type="OptionButton" parent="UICanvas/task_panel/VBox/task_publish_form"]
+
+[node name="submit_row" type="HBoxContainer" parent="UICanvas/task_panel/VBox/task_publish_form"]
+theme_override_constants/separation = 10
+
+[node name="submit_btn" type="Button" parent="UICanvas/task_panel/VBox/task_publish_form/submit_row"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "发布"
+
+[node name="Scroll" type="ScrollContainer" parent="UICanvas/task_panel/VBox"]
+size_flags_vertical = 3
+vertical_scroll_mode = 1
+horizontal_scroll_mode = 0
+
+[node name="task_list" type="VBoxContainer" parent="UICanvas/task_panel/VBox/Scroll"]
+size_flags_horizontal = 3
+theme_override_constants/separation = 10
+
+
+[node name="ai_settings_panel" type="Panel" parent="UICanvas"]
+visible = false
+custom_minimum_size = Vector2(0, 240)
+
+[node name="VBox" type="VBoxContainer" parent="UICanvas/ai_settings_panel"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = 12.0
+offset_right = -16.0
+offset_bottom = -12.0
+theme_override_constants/separation = 8
+
+[node name="title" type="Label" parent="UICanvas/ai_settings_panel/VBox"]
+text = "AI 设置"
+
+[node name="HSeparator" type="HSeparator" parent="UICanvas/ai_settings_panel/VBox"]
+
+[node name="type_row" type="HBoxContainer" parent="UICanvas/ai_settings_panel/VBox"]
+theme_override_constants/separation = 8
+
+[node name="tl" type="Label" parent="UICanvas/ai_settings_panel/VBox/type_row"]
+text = "类型:"
+
+[node name="ai_type_opt" type="OptionButton" parent="UICanvas/ai_settings_panel/VBox/type_row"]
+size_flags_horizontal = 3
+
+[node name="model_row" type="HBoxContainer" parent="UICanvas/ai_settings_panel/VBox"]
+theme_override_constants/separation = 8
+
+[node name="ml" type="Label" parent="UICanvas/ai_settings_panel/VBox/model_row"]
+text = "模型:"
+
+[node name="ai_model_edit" type="LineEdit" parent="UICanvas/ai_settings_panel/VBox/model_row"]
+size_flags_horizontal = 3
+placeholder_text = "如 gpt-4o-mini / deepseek-chat"
+
+[node name="key_row" type="HBoxContainer" parent="UICanvas/ai_settings_panel/VBox"]
+theme_override_constants/separation = 8
+
+[node name="kl" type="Label" parent="UICanvas/ai_settings_panel/VBox/key_row"]
+text = "Key: "
+
+[node name="ai_key_edit" type="LineEdit" parent="UICanvas/ai_settings_panel/VBox/key_row"]
+secret = true
+size_flags_horizontal = 3
+placeholder_text = "sk-... (Ollama 可空)"
+
+[node name="btn_row" type="HBoxContainer" parent="UICanvas/ai_settings_panel/VBox"]
+theme_override_constants/separation = 10
+
+[node name="save_btn" type="Button" parent="UICanvas/ai_settings_panel/VBox/btn_row"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "保存"
+
+[node name="close_btn" type="Button" parent="UICanvas/ai_settings_panel/VBox/btn_row"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "关闭"
+
+[node name="switch_panel" type="Panel" parent="UICanvas"]
+visible = false
+custom_minimum_size = Vector2(0, 380)
+
+[node name="VBox" type="VBoxContainer" parent="UICanvas/switch_panel"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = 12.0
+offset_right = -16.0
+offset_bottom = -12.0
+theme_override_constants/separation = 8
+
+[node name="title" type="Label" parent="UICanvas/switch_panel/VBox"]
+text = "切换控制"
+
+[node name="HSeparator" type="HSeparator" parent="UICanvas/switch_panel/VBox"]
+
+[node name="switch_itemlist" type="ItemList" parent="UICanvas/switch_panel/VBox"]
+custom_minimum_size = Vector2(0, 260)
+size_flags_vertical = 3
+
+[node name="btn_row" type="HBoxContainer" parent="UICanvas/switch_panel/VBox"]
+theme_override_constants/separation = 10
+
+[node name="close_btn" type="Button" parent="UICanvas/switch_panel/VBox/btn_row"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "关闭"
+
+[node name="player_list_panel" type="Panel" parent="UICanvas"]
+visible = false
+mouse_filter = 2
+custom_minimum_size = Vector2(960, 540)
+
+[node name="VBox" type="VBoxContainer" parent="UICanvas/player_list_panel"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = 12.0
+offset_right = -16.0
+offset_bottom = -12.0
+theme_override_constants/separation = 8
+
+[node name="title" type="Label" parent="UICanvas/player_list_panel/VBox"]
+text = "房间玩家"
+
+[node name="HSeparator" type="HSeparator" parent="UICanvas/player_list_panel/VBox"]
+
+[node name="player_list_label" type="Label" parent="UICanvas/player_list_panel/VBox"]
+custom_minimum_size = Vector2(0, 280)
+
+[node name="chat_log_panel" type="Panel" parent="UICanvas"]
+visible = false
+custom_minimum_size = Vector2(0, 460)
+
+[node name="VBox" type="VBoxContainer" parent="UICanvas/chat_log_panel"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = 12.0
+offset_right = -16.0
+offset_bottom = -12.0
+theme_override_constants/separation = 8
+
+[node name="title" type="Label" parent="UICanvas/chat_log_panel/VBox"]
+text = "对话记录（最近 50 条）"
+
+[node name="HSeparator" type="HSeparator" parent="UICanvas/chat_log_panel/VBox"]
+
+[node name="btn_row" type="HBoxContainer" parent="UICanvas/chat_log_panel/VBox"]
+theme_override_constants/separation = 10
+
+[node name="refresh_btn" type="Button" parent="UICanvas/chat_log_panel/VBox/btn_row"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "刷新"
+
+[node name="close_btn" type="Button" parent="UICanvas/chat_log_panel/VBox/btn_row"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "关闭"
+
+[node name="Scroll" type="ScrollContainer" parent="UICanvas/chat_log_panel/VBox"]
+size_flags_vertical = 3
+vertical_scroll_mode = 1
+horizontal_scroll_mode = 0
+
+[node name="chat_log_vbox" type="VBoxContainer" parent="UICanvas/chat_log_panel/VBox/Scroll"]
+size_flags_horizontal = 3
+theme_override_constants/separation = 10
+
+[node name="npc_log_panel" type="Panel" parent="UICanvas"]
+visible = false
+custom_minimum_size = Vector2(0, 420)
+
+[node name="VBox" type="VBoxContainer" parent="UICanvas/npc_log_panel"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = 12.0
+offset_right = -16.0
+offset_bottom = -12.0
+theme_override_constants/separation = 8
+
+[node name="title" type="Label" parent="UICanvas/npc_log_panel/VBox"]
+text = "NPC 日志"
+
+[node name="HSeparator" type="HSeparator" parent="UICanvas/npc_log_panel/VBox"]
+
+[node name="btn_row" type="HBoxContainer" parent="UICanvas/npc_log_panel/VBox"]
+theme_override_constants/separation = 10
+
+[node name="refresh_btn" type="Button" parent="UICanvas/npc_log_panel/VBox/btn_row"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "刷新"
+
+[node name="close_btn" type="Button" parent="UICanvas/npc_log_panel/VBox/btn_row"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "关闭"
+
+[node name="Scroll" type="ScrollContainer" parent="UICanvas/npc_log_panel/VBox"]
+size_flags_vertical = 3
+vertical_scroll_mode = 1
+horizontal_scroll_mode = 0
+
+[node name="npc_log_vbox" type="VBoxContainer" parent="UICanvas/npc_log_panel/VBox/Scroll"]
+size_flags_horizontal = 3
+theme_override_constants/separation = 10
+
+[node name="relations_edit_panel" type="Panel" parent="UICanvas"]
+visible = false
+custom_minimum_size = Vector2(480, 460)
+
+[node name="Scroll" type="ScrollContainer" parent="UICanvas/relations_edit_panel"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = 12.0
+offset_right = -16.0
+offset_bottom = -12.0
+horizontal_scroll_mode = 0
+
+[node name="VBox" type="VBoxContainer" parent="UICanvas/relations_edit_panel/Scroll"]
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="title" type="Label" parent="UICanvas/relations_edit_panel/Scroll/VBox"]
+text = "关系编辑（选中角色对每个人的印象）"
+
+[node name="HSeparator" type="HSeparator" parent="UICanvas/relations_edit_panel/Scroll/VBox"]
+
+[node name="relations_edit_sel_label" type="Label" parent="UICanvas/relations_edit_panel/Scroll/VBox"]
+text = "选中：无"
+
+[node name="relations_edit_vbox" type="VBoxContainer" parent="UICanvas/relations_edit_panel/Scroll/VBox"]
+size_flags_horizontal = 3
+theme_override_constants/separation = 10
+
+[node name="add_row" type="HBoxContainer" parent="UICanvas/relations_edit_panel/Scroll/VBox"]
+theme_override_constants/separation = 8
+
+[node name="add_btn" type="Button" parent="UICanvas/relations_edit_panel/Scroll/VBox/add_row"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "添加关系"
+
+[node name="save_btn" type="Button" parent="UICanvas/relations_edit_panel/Scroll/VBox/add_row"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "保存"
+
+[node name="close_btn" type="Button" parent="UICanvas/relations_edit_panel/Scroll/VBox/add_row"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "关闭"
+
+[node name="implant_memory_panel" type="Panel" parent="UICanvas"]
+visible = false
+custom_minimum_size = Vector2(0, 360)
+
+[node name="VBox" type="VBoxContainer" parent="UICanvas/implant_memory_panel"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = 12.0
+offset_right = -16.0
+offset_bottom = -12.0
+theme_override_constants/separation = 8
+
+[node name="title" type="Label" parent="UICanvas/implant_memory_panel/VBox"]
+text = "植入核心记忆"
+
+[node name="HSeparator" type="HSeparator" parent="UICanvas/implant_memory_panel/VBox"]
+
+[node name="implant_memory_sel_label" type="Label" parent="UICanvas/implant_memory_panel/VBox"]
+text = "选中：无"
+
+[node name="Scroll" type="ScrollContainer" parent="UICanvas/implant_memory_panel/VBox"]
+size_flags_vertical = 3
+vertical_scroll_mode = 1
+horizontal_scroll_mode = 0
+
+[node name="implant_memory_list" type="VBoxContainer" parent="UICanvas/implant_memory_panel/VBox/Scroll"]
+size_flags_horizontal = 3
+theme_override_constants/separation = 6
+
+[node name="implant_memory_input" type="TextEdit" parent="UICanvas/implant_memory_panel/VBox"]
+custom_minimum_size = Vector2(0, 100)
+size_flags_horizontal = 3
+placeholder_text = "输入要植入的事实（一句话）"
+
+[node name="btn_row" type="HBoxContainer" parent="UICanvas/implant_memory_panel/VBox"]
+theme_override_constants/separation = 10
+
+[node name="save_btn" type="Button" parent="UICanvas/implant_memory_panel/VBox/btn_row"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "植入"
+
+[node name="close_btn" type="Button" parent="UICanvas/implant_memory_panel/VBox/btn_row"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "关闭"
+
+[node name="trade_panel" type="Panel" parent="UICanvas"]
+visible = false
+custom_minimum_size = Vector2(0, 380)
+
+[node name="VBox" type="VBoxContainer" parent="UICanvas/trade_panel"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = 12.0
+offset_right = -16.0
+offset_bottom = -12.0
+theme_override_constants/separation = 8
+
+[node name="title" type="Label" parent="UICanvas/trade_panel/VBox"]
+text = "物品交易"
+
+[node name="HSeparator" type="HSeparator" parent="UICanvas/trade_panel/VBox"]
+
+[node name="trade_items_label" type="Label" parent="UICanvas/trade_panel/VBox"]
+custom_minimum_size = Vector2(0, 32)
+size_flags_horizontal = 3
+autowrap_mode = 3
+text = "你的物品：加载中..."
+
+[node name="trade_gold_label" type="Label" parent="UICanvas/trade_panel/VBox"]
+text = "金币：0"
+
+[node name="tl" type="Label" parent="UICanvas/trade_panel/VBox"]
+text = "交易对象："
+
+[node name="trade_target_opt" type="OptionButton" parent="UICanvas/trade_panel/VBox"]
+size_flags_horizontal = 3
+
+[node name="ol" type="Label" parent="UICanvas/trade_panel/VBox"]
+text = "你要给对方："
+
+[node name="offer_row" type="HBoxContainer" parent="UICanvas/trade_panel/VBox"]
+theme_override_constants/separation = 8
+
+[node name="trade_offer_item" type="LineEdit" parent="UICanvas/trade_panel/VBox/offer_row"]
+size_flags_horizontal = 3
+placeholder_text = "物品名"
+
+[node name="trade_offer_money" type="LineEdit" parent="UICanvas/trade_panel/VBox/offer_row"]
+size_flags_horizontal = 3
+placeholder_text = "金币"
+
+[node name="rl" type="Label" parent="UICanvas/trade_panel/VBox"]
+text = "你要对方给你："
+
+[node name="req_row" type="HBoxContainer" parent="UICanvas/trade_panel/VBox"]
+theme_override_constants/separation = 8
+
+[node name="trade_req_item" type="LineEdit" parent="UICanvas/trade_panel/VBox/req_row"]
+size_flags_horizontal = 3
+placeholder_text = "物品名"
+
+[node name="trade_req_money" type="LineEdit" parent="UICanvas/trade_panel/VBox/req_row"]
+size_flags_horizontal = 3
+placeholder_text = "金币"
+
+[node name="btn_row" type="HBoxContainer" parent="UICanvas/trade_panel/VBox"]
+theme_override_constants/separation = 10
+
+[node name="submit_btn" type="Button" parent="UICanvas/trade_panel/VBox/btn_row"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "发起交易"
+
+[node name="close_btn" type="Button" parent="UICanvas/trade_panel/VBox/btn_row"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "关闭"
+
+[node name="director_panel" type="Panel" parent="UICanvas"]
+visible = false
+custom_minimum_size = Vector2(0, 540)
+
+[node name="Scroll" type="ScrollContainer" parent="UICanvas/director_panel"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = 12.0
+offset_right = -16.0
+offset_bottom = -12.0
+horizontal_scroll_mode = 0
+
+[node name="VBox" type="VBoxContainer" parent="UICanvas/director_panel/Scroll"]
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="title" type="Label" parent="UICanvas/director_panel/Scroll/VBox"]
+text = "导演控制台"
+
+[node name="HSeparator" type="HSeparator" parent="UICanvas/director_panel/Scroll/VBox"]
+
+[node name="el" type="Label" parent="UICanvas/director_panel/Scroll/VBox"]
+text = "生效中的事件（点按钮停用）"
+
+[node name="event_flow_box" type="VBoxContainer" parent="UICanvas/director_panel/Scroll/VBox"]
+theme_override_constants/separation = 3
+
+[node name="wl" type="Label" parent="UICanvas/director_panel/Scroll/VBox"]
+text = "天气"
+
+[node name="weather_opt" type="OptionButton" parent="UICanvas/director_panel/Scroll/VBox"]
+size_flags_horizontal = 3
+
+[node name="tsl" type="Label" parent="UICanvas/director_panel/Scroll/VBox"]
+text = "时间流速（每真实秒推进的游戏分钟数，1≈现实24分钟一天）"
+autowrap_mode = 3
+
+[node name="time_scale_slider" type="HSlider" parent="UICanvas/director_panel/Scroll/VBox"]
+max_value = 30.0
+step = 1.0
+size_flags_horizontal = 3
+custom_minimum_size = Vector2(0, 20)
+
+[node name="wbl" type="Label" parent="UICanvas/director_panel/Scroll/VBox"]
+text = "小镇背景（世界观）"
+
+[node name="world_bg_edit" type="TextEdit" parent="UICanvas/director_panel/Scroll/VBox"]
+custom_minimum_size = Vector2(0, 100)
+size_flags_horizontal = 3
+
+[node name="cl" type="Label" parent="UICanvas/director_panel/Scroll/VBox"]
+text = "公司信息"
+
+[node name="company_edit" type="TextEdit" parent="UICanvas/director_panel/Scroll/VBox"]
+custom_minimum_size = Vector2(0, 100)
+size_flags_horizontal = 3
+
+[node name="srl" type="Label" parent="UICanvas/director_panel/Scroll/VBox"]
+text = "社交规则"
+
+[node name="social_rules_edit" type="TextEdit" parent="UICanvas/director_panel/Scroll/VBox"]
+custom_minimum_size = Vector2(0, 100)
+size_flags_horizontal = 3
+
+[node name="world_btn_row" type="HBoxContainer" parent="UICanvas/director_panel/Scroll/VBox"]
+theme_override_constants/separation = 10
+
+[node name="save_world_btn" type="Button" parent="UICanvas/director_panel/Scroll/VBox/world_btn_row"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "保存世界观"
+
+[node name="nl" type="Label" parent="UICanvas/director_panel/Scroll/VBox"]
+text = "发布情境新闻（渲染氛围，如台风、吸血鬼）"
+autowrap_mode = 3
+
+[node name="news_title_edit" type="LineEdit" parent="UICanvas/director_panel/Scroll/VBox"]
+size_flags_horizontal = 3
+placeholder_text = "标题（可选）"
+
+[node name="news_content_edit" type="TextEdit" parent="UICanvas/director_panel/Scroll/VBox"]
+custom_minimum_size = Vector2(0, 100)
+size_flags_horizontal = 3
+placeholder_text = "内容：台风即将登陆"
+
+[node name="news_btn_row" type="HBoxContainer" parent="UICanvas/director_panel/Scroll/VBox"]
+theme_override_constants/separation = 10
+
+[node name="pub_news_btn" type="Button" parent="UICanvas/director_panel/Scroll/VBox/news_btn_row"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "发布新闻"
+
+[node name="rul" type="Label" parent="UICanvas/director_panel/Scroll/VBox"]
+text = "发布规则（约束行为，规则怪谈式，如天黑别出门）"
+autowrap_mode = 3
+
+[node name="rule_title_edit" type="LineEdit" parent="UICanvas/director_panel/Scroll/VBox"]
+size_flags_horizontal = 3
+placeholder_text = "标题（可选）"
+
+[node name="rule_content_edit" type="TextEdit" parent="UICanvas/director_panel/Scroll/VBox"]
+custom_minimum_size = Vector2(0, 100)
+size_flags_horizontal = 3
+placeholder_text = "规则：天黑后所有居民必须留在室内"
+
+[node name="rule_btn_row" type="HBoxContainer" parent="UICanvas/director_panel/Scroll/VBox"]
+theme_override_constants/separation = 10
+
+[node name="pub_rule_btn" type="Button" parent="UICanvas/director_panel/Scroll/VBox/rule_btn_row"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "发布规则"
+
+[node name="close_btn_row" type="HBoxContainer" parent="UICanvas/director_panel/Scroll/VBox"]
+theme_override_constants/separation = 10
+
+[node name="close_btn" type="Button" parent="UICanvas/director_panel/Scroll/VBox/close_btn_row"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "关闭"
+
+[node name="ui_settings_panel" type="Panel" parent="UICanvas"]
+visible = false
+custom_minimum_size = Vector2(0, 280)
+
+[node name="VBox" type="VBoxContainer" parent="UICanvas/ui_settings_panel"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = 12.0
+offset_right = -16.0
+offset_bottom = -12.0
+theme_override_constants/separation = 8
+
+[node name="title" type="Label" parent="UICanvas/ui_settings_panel/VBox"]
+text = "UI 设置（仅本人，覆盖管理员默认）"
+
+[node name="HSeparator" type="HSeparator" parent="UICanvas/ui_settings_panel/VBox"]
+
+[node name="btn_row" type="HBoxContainer" parent="UICanvas/ui_settings_panel/VBox"]
+theme_override_constants/separation = 10
+
+[node name="save_btn" type="Button" parent="UICanvas/ui_settings_panel/VBox/btn_row"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "保存"
+
+[node name="close_btn" type="Button" parent="UICanvas/ui_settings_panel/VBox/btn_row"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "关闭"
+
+[node name="token_panel" type="Panel" parent="UICanvas"]
+visible = false
+custom_minimum_size = Vector2(0, 420)
+
+[node name="VBox" type="VBoxContainer" parent="UICanvas/token_panel"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = 12.0
+offset_right = -16.0
+offset_bottom = -12.0
+theme_override_constants/separation = 8
+
+[node name="title" type="Label" parent="UICanvas/token_panel/VBox"]
+text = "Token 消耗（本地累计）"
+
+[node name="HSeparator" type="HSeparator" parent="UICanvas/token_panel/VBox"]
+
+[node name="Scroll" type="ScrollContainer" parent="UICanvas/token_panel/VBox"]
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="token_label" type="Label" parent="UICanvas/token_panel/VBox/Scroll"]
+size_flags_horizontal = 3
+autowrap_mode = 3
+
+[node name="btn_row" type="HBoxContainer" parent="UICanvas/token_panel/VBox"]
+theme_override_constants/separation = 10
+
+[node name="close_btn" type="Button" parent="UICanvas/token_panel/VBox/btn_row"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "关闭"
+
+[node name="about_panel" type="Panel" parent="UICanvas"]
+visible = false
+custom_minimum_size = Vector2(0, 260)
+
+[node name="VBox" type="VBoxContainer" parent="UICanvas/about_panel"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = 12.0
+offset_right = -16.0
+offset_bottom = -12.0
+theme_override_constants/separation = 8
+
+[node name="title" type="Label" parent="UICanvas/about_panel/VBox"]
+text = "关于 / 素材署名"
+
+[node name="HSeparator" type="HSeparator" parent="UICanvas/about_panel/VBox"]
+
+[node name="about_label" type="Label" parent="UICanvas/about_panel/VBox"]
+autowrap_mode = 3
+
+[node name="btn_row" type="HBoxContainer" parent="UICanvas/about_panel/VBox"]
+theme_override_constants/separation = 10
+
+[node name="close_btn" type="Button" parent="UICanvas/about_panel/VBox/btn_row"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "关闭"

@@ -1,0 +1,309 @@
+extends Node
+
+var _scene_commands: Node
+var _node_commands: Node
+var _test_commands: Node
+var _export_commands: Node
+var _particle_commands: Node
+var _nav_commands: Node
+var _animtree_commands: Node
+var _sync_commands: Node
+var _undo_manager: Node
+var _editor_guards: Node
+var _animation_commands: Node
+var _recording_commands: Node
+var _ui_commands: Node
+var _asset_commands: Node
+var _debug_commands: Node  # CMP-3 (2026-08-08): debug 组 Phase 1 断点管理
+var _engine_commands: Node  # CMP-4 (2026-08-08): engine 组 实时 ClassDB 内省
+
+func setup(plugin: EditorPlugin) -> void:
+	_undo_manager = preload("undo_manager.gd").new()
+	_undo_manager.setup(plugin)
+	add_child(_undo_manager)
+
+	_editor_guards = preload("editor_guards.gd").new()
+	_editor_guards.setup(plugin)
+	add_child(_editor_guards)
+
+	_scene_commands = preload("commands/scene_commands.gd").new()
+	_scene_commands.setup(plugin, _undo_manager, _editor_guards)
+	add_child(_scene_commands)
+
+	_node_commands = preload("commands/node_commands.gd").new()
+	_node_commands.setup(plugin, _undo_manager)
+	add_child(_node_commands)
+
+	_test_commands = preload("commands/test_commands.gd").new()
+	_test_commands.setup(plugin, _undo_manager)
+	add_child(_test_commands)
+
+	_export_commands = preload("commands/export_commands.gd").new()
+	_export_commands.setup(plugin)
+	add_child(_export_commands)
+
+	_particle_commands = preload("commands/particle_commands.gd").new()
+	_particle_commands.setup(plugin, _undo_manager)
+	add_child(_particle_commands)
+
+	_nav_commands = preload("commands/nav_commands.gd").new()
+	_nav_commands.setup(plugin, _undo_manager)
+	add_child(_nav_commands)
+
+	_animtree_commands = preload("commands/animtree_commands.gd").new()
+	_animtree_commands.setup(plugin, _undo_manager)
+	add_child(_animtree_commands)
+
+	_sync_commands = preload("commands/sync_commands.gd").new()
+	_sync_commands.setup(self, plugin)
+	add_child(_sync_commands)
+
+	_animation_commands = preload("commands/animation_commands.gd").new()
+	_animation_commands.setup(plugin, _undo_manager)
+	add_child(_animation_commands)
+
+	_recording_commands = preload("commands/recording_commands.gd").new()
+	_recording_commands.setup(plugin)
+	add_child(_recording_commands)
+
+	_ui_commands = preload("commands/ui_commands.gd").new()
+	_ui_commands.setup(plugin, _undo_manager)
+	add_child(_ui_commands)
+
+	_asset_commands = preload("commands/asset/asset_commands.gd").new()
+	_asset_commands.setup(plugin, _undo_manager)
+	add_child(_asset_commands)
+
+	# CMP-3 (2026-08-08): debug 组 Phase 1 断点管理(editor-only)
+	_debug_commands = preload("commands/debug_commands.gd").new()
+	_debug_commands.setup(plugin)
+	add_child(_debug_commands)
+
+	# CMP-4 (2026-08-08): engine 组 实时 ClassDB 内省(editor-only)
+	_engine_commands = preload("commands/engine_commands.gd").new()
+	_engine_commands.setup(plugin)
+	add_child(_engine_commands)
+
+func cleanup() -> void:
+	var modules = [
+		_sync_commands, _recording_commands, _animation_commands,
+		_ui_commands, _asset_commands, _debug_commands, _engine_commands, _scene_commands, _node_commands,
+		_test_commands, _export_commands, _particle_commands,
+		_nav_commands, _animtree_commands, _undo_manager,
+	]
+	for node in modules:
+		if node:
+			if node.has_method("cleanup"):
+				node.cleanup()
+			node.queue_free()
+	_sync_commands = null
+	_recording_commands = null
+	_animation_commands = null
+	_ui_commands = null
+	_asset_commands = null
+	_debug_commands = null
+	_engine_commands = null
+	_scene_commands = null
+	_node_commands = null
+	_test_commands = null
+	_export_commands = null
+	_particle_commands = null
+	_nav_commands = null
+	_animtree_commands = null
+	_undo_manager = null
+	if _editor_guards:
+		_editor_guards.queue_free()
+		_editor_guards = null
+
+func handle(method: String, params: Dictionary, request_id: int) -> Dictionary:
+	match method:
+		"open_scene":
+			return _scene_commands.handle_open_scene(params)
+		"save_scene":
+			return _scene_commands.handle_save_scene(params)
+		"instance_scene":
+			return _scene_commands.handle_instance_scene(params)
+		"set_instance_property":
+			return _scene_commands.handle_set_instance_property(params, request_id)
+		"add_node":
+			return _node_commands.handle_add_node(params, request_id)
+		"remove_node":
+			return _node_commands.handle_remove_node(params, request_id)
+		# editor-version-tear §5: edit_node / batch_add_nodes 经 editor-method-map 登记,
+		# editor 连接时直走 node_commands handler（per-property undo / 批量 UndoRedo，改内存），
+		# 不再 fallback headless spawnGodot 改盘（致磁盘/内存版本撕裂）
+		"edit_node":
+			return _node_commands.handle_edit_node(params, request_id)
+		"batch_add_nodes":
+			return _node_commands.handle_batch_add_nodes(params, request_id)
+		"test_assert":
+			return _test_commands.handle_test_assert(params)
+		# P2-12 phase 2: test_run moved to handle_test_async (coroutine path,
+		# yields between tests to keep WS keepalive alive). test_manage stays
+		# synchronous here (秒级 results_get).
+		"test_manage":
+			return _test_commands.handle_test_manage(params)
+		"export_list_presets":
+			return _export_commands.handle_export_list_presets(params)
+		"export_get_preset":
+			return _export_commands.handle_export_get_preset(params)
+		"export_build":
+			return _export_commands.handle_export_build(params)
+		"particles_create":
+			return _particle_commands.handle_particles_create(params, request_id)
+		"particles_set_emission":
+			return _particle_commands.handle_particles_set_emission(params, request_id)
+		"particles_set_process":
+			return _particle_commands.handle_particles_set_process(params, request_id)
+		"particles_load_preset":
+			return _particle_commands.handle_particles_load_preset(params, request_id)
+		"particles_set_material":
+			return _particle_commands.handle_particles_set_material(params, request_id)
+		"nav_create_region":
+			return _nav_commands.handle_nav_create_region(params, request_id)
+		"nav_bake_mesh":
+			return _nav_commands.handle_nav_bake_mesh(params)
+		"nav_create_agent":
+			return _nav_commands.handle_nav_create_agent(params, request_id)
+		"nav_set_params":
+			return _nav_commands.handle_nav_set_params(params)
+		"nav_create_link":
+			return _nav_commands.handle_nav_create_link(params, request_id)
+		"animtree_create":
+			return _animtree_commands.handle_animtree_create(params, request_id)
+		"animtree_add_state":
+			return _animtree_commands.handle_animtree_add_state(params)
+		"animtree_add_transition":
+			return _animtree_commands.handle_animtree_add_transition(params)
+		"animtree_set_blend":
+			return _animtree_commands.handle_animtree_set_blend(params)
+		"animtree_play":
+			return _animtree_commands.handle_animtree_play(params)
+		"editor_sync_start":
+			return _sync_commands.start_sync()
+		"editor_sync_stop":
+			return _sync_commands.stop_sync()
+		"editor_get_scene_tree":
+			return _sync_commands.get_scene_tree()
+		"editor_get_scene_stats":
+			return _sync_commands.get_scene_stats()
+		# --- animation ------------------------------------------------
+		"animation_track":
+			return _animation_commands.handle_animation_track(params, request_id)
+		"animation_keyframe":
+			return _animation_commands.handle_animation_keyframe(params, request_id)
+		"animation_curve":
+			return _animation_commands.handle_animation_curve(params, request_id)
+		"animation_blend":
+			return _animation_commands.handle_animation_blend(params, request_id)
+		# GD-R10 (2026-08-08): recording 路由移除——recording_start/play 永远返 -32009(editor 模式禁),
+		# recording_stop 在 editor 态 _recording 恒 false 无用。3 个命令是噪音。
+		# recording_commands.gd 文件保留(editor 模式下不再路由,headless/bridge recording 走 runtime 工具
+		# 的 GDScript 执行路径不经 command_handler;模块 preload+add_child 保留供未来 editor recording 恢复)。
+		# --- ui -------------------------------------------------------
+		"ui_create_control":
+			return _ui_commands.handle_ui_create_control(params, request_id)
+		"ui_set_layout":
+			return _ui_commands.handle_ui_set_layout(params, request_id)
+		"ui_get_layout":
+			return _ui_commands.handle_ui_get_layout(params)
+		"ui_anchor_preset":
+			return _ui_commands.handle_ui_anchor_preset(params, request_id)
+		"ui_set_theme":
+			return _ui_commands.handle_ui_set_theme(params)
+		"ui_container_add":
+			return _ui_commands.handle_ui_container_add(params, request_id)
+		"theme_create":
+			return _ui_commands.handle_theme_create(params)
+		"theme_set_property":
+			return _ui_commands.handle_theme_set_property(params)
+		# --- asset -----------------------------------------------------
+		"asset_create":
+			return _asset_commands.handle_create(params, request_id)
+		"asset_path":
+			return _asset_commands.handle_path(params, request_id)
+		"asset_batch":
+			return _asset_commands.handle_batch(params, request_id)
+		"asset_undo":
+			return _asset_commands.handle_undo(params, request_id)
+		"asset_save":
+			return _asset_commands.handle_save(params, request_id)
+		# --- debug (CMP-3 2026-08-08) ------------------------------------------------
+		"debug_set_breakpoint":
+			return _debug_commands.handle_set_breakpoint(params)
+		"debug_clear_breakpoint":
+			return _debug_commands.handle_clear_breakpoint(params)
+		"debug_list_breakpoints":
+			return _debug_commands.handle_list_breakpoints(params)
+		# --- engine (CMP-4 2026-08-08) — 实时 ClassDB 内省 --------------------------
+		"engine_class_info":
+			return _engine_commands.handle_class_info(params)
+		"engine_search":
+			return _engine_commands.handle_search(params)
+		"engine_get_inheritance":
+			return _engine_commands.handle_get_inheritance(params)
+		# Tools NOT routed here (headless-only via TS/GDScript executor):
+		#   animation (play/stop/seek/list_players) - runtime AnimationPlayer control
+		#   recording_save / recording_load - file I/O handled by TS side
+		#   ui_draw_recipe / ui_build_layout - complex declarative ops via GDScript exec
+		# I-01: 文本资源写入守卫（TS 侧写入脚本/着色器前调用）
+		"guard_text_resource_write":
+			if _editor_guards == null:
+				return {"error": {"code": -32003, "message": "Editor guards not available"}}
+			var guard_path: String = params.get("path", "")
+			# P1-7 (2026-07-06 RCE 审查): 忽略客户端 force — 防已认证 WS 客户端直传 force=true
+			# 绕过文本资源写守卫。force 仅供服务端内部逻辑（如未来经 confirm_and_execute
+			# 校验 confirm token 后才设 true），客户端 force 永远视为 false。
+			var guard_result = _editor_guards.guard_text_resource_write(guard_path, false)
+			if guard_result.is_empty():
+				return {"result": {"status": "ok", "path": guard_path}}
+			return guard_result
+		# P1-2 (2026-07-06 review): 场景离线保存守卫 — TS 侧 scene save 写前调,
+		# 防覆盖编辑器中打开的场景致磁盘/内存版本撕裂(与 guard_text_resource_write 对称)
+		"guard_offline_scene_save":
+			if _editor_guards == null:
+				return {"error": {"code": -32003, "message": "Editor guards not available"}}
+			var scene_guard_path: String = params.get("path", "")
+			var scene_guard_result = _editor_guards.guard_offline_scene_save(scene_guard_path)
+			if scene_guard_result.is_empty():
+				return {"result": {"status": "ok", "path": scene_guard_path}}
+			return scene_guard_result
+		# CMP-1 (2026-08-08): 返回 editor 当前项目根,供 MCP 端连接时校验项目匹配。
+		# 复用 websocket_server.gd _get_project_dir() 同款逻辑(ProjectSettings.globalize_path)。
+		# 不依赖 EditorInterface / 打开场景,ProjectSettings 是全局单例。
+		"editor_get_project_path":
+			var res_root: String = ProjectSettings.globalize_path("res://")
+			return {"result": {"project_path": res_root.rstrip("/")}}
+		_:
+			return {"error": {"code": -32601, "message": "Unknown method: %s" % method}}
+
+
+## nav 专用 async 入口（A-lite：nav 走 coroutine，非 nav 走同步 handle）。
+## websocket_server 按 method.begins_with("nav_") 分流到此。spec §8。
+func handle_nav_async(method: String, params: Dictionary, request_id: int) -> Dictionary:
+	match method:
+		"nav_create_region": return await _nav_commands.handle_nav_create_region_async(params, request_id)
+		"nav_bake_mesh":     return await _nav_commands.handle_nav_bake_mesh_async(params)
+		"nav_create_agent":  return _nav_commands.handle_nav_create_agent(params, request_id)
+		"nav_set_params":    return _nav_commands.handle_nav_set_params(params)
+		"nav_create_link":   return _nav_commands.handle_nav_create_link(params, request_id)
+		_:
+			return {"error": {"code": -32601, "message": "Unknown nav method: %s" % method}}
+
+
+# P2-12 phase 2: test_run coroutine entry. websocket_server.gd routes
+# test_run here (await) so the suite can yield between tests; test_manage
+# stays in the synchronous handle() match above.
+func handle_test_async(method: String, params: Dictionary, request_id: int) -> Dictionary:
+	match method:
+		"test_run": return await _test_commands.handle_test_run_async(params, request_id)
+		_:
+			return {"error": {"code": -32601, "message": "Unknown test method: %s" % method}}
+
+
+func send_notification(method: String, params: Dictionary) -> void:
+	# Forward to plugin's WebSocket/TCP notification channel
+	var plugin = get_parent()
+	if plugin and plugin.has_method("send_mcp_notification"):
+		plugin.send_mcp_notification(method, params)
+

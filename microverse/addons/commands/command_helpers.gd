@@ -1,0 +1,222 @@
+## command_helpers.gd — Shared utility functions for editor command modules.
+## C-05: Extracted from 7 files to eliminate ~120 lines of duplication.
+
+class_name CommandHelpers
+
+
+## Get the root node of the currently edited scene.
+## Tries EditorInterface first (editor mode), falls back to SceneTree root child (headless).
+static func get_edited_scene_root(plugin: EditorPlugin = null) -> Node:
+	if plugin != null:
+		var ei: EditorInterface = plugin.get_editor_interface()
+		if ei != null:
+			var edited: Node = ei.get_edited_scene_root()
+			if edited != null:
+				return edited
+	var ml: MainLoop = Engine.get_main_loop()
+	if ml == null or not (ml is SceneTree):
+		return null
+	var st: SceneTree = ml as SceneTree
+	if st == null or st.root == null:
+		return null
+	if st.root.get_child_count() > 0:
+		return st.root.get_child(0)
+	return null
+
+
+## Find a node by path relative to root.
+## Strips leading "root/" prefix and leading slashes.
+static func find_node(root: Node, path: String) -> Node:
+	if path == "" or path == "root":
+		return root
+	var p: String = path
+	while p.begins_with("/"):
+		p = p.substr(1)
+	if p.begins_with("root/"):
+		p = p.substr(5)
+	if p.begins_with(root.name + "/"):
+		p = p.substr(root.name.length() + 1)
+	elif p == root.name:
+		return root
+	if p == "":
+		return root
+	return root.get_node_or_null(p)
+
+
+## Check for path traversal (`..` segments) in a resource path.
+## C-1 / IMP-2-CONSISTENCY: 共享段级 `..` 阻断,被 scene_commands 与 ui_commands 复用,
+## 保持防御深度一致(与 godot_operations._sanitize_res_path 对齐)。单一实现消除重复。
+static func has_path_traversal(p: String) -> bool:
+	return "/../" in p or p.begins_with("../") or p.ends_with("/..") or p == ".."
+
+
+## B7: 原子化资源写——tmp+rename 防超时 kill 落在 save 中途产半截损坏 .tres/.tscn 阻塞项目加载。
+## tmp 必须以目标扩展名结尾(ResourceSaver 按扩展名分派 saver, 裸 .tmp 返回 err 15)。
+## 对齐 data-import.ts:188 已验证范例 + headless godot_operations.gd _save_atomic(同模式独立实现)。
+## T3a 教训1: FileAccess.file_exists 静态; DirAccess 的 file_exists 是实例方法(Godot 4)。
+## T3a 教训3: write-before-clean——同路径旧 tmp 残留先清,防阻塞本次 save。
+static func _save_atomic(res, full_path: String) -> int:
+	var ext := full_path.get_extension()  # tres/res/tscn
+	var tmp := full_path + ".tmp." + ext
+	# 写前清同路径旧 tmp(防上次同路径 crash 残留阻塞本次 save)
+	if FileAccess.file_exists(tmp):
+		DirAccess.remove_absolute(tmp)
+	var save_err: int = ResourceSaver.save(res, tmp)
+	if save_err != OK:
+		DirAccess.remove_absolute(tmp)  # save 失败清半截 tmp
+		return save_err
+	var rename_err: int = DirAccess.rename_absolute(tmp, full_path)
+	if rename_err != OK:
+		DirAccess.remove_absolute(tmp)  # rename 失败清 tmp
+		return rename_err
+	return OK
+
+
+## Parse a Vector3 from JSON/array sources. T5: shared vec3 parser for asset_placer
+## (replaces per-file _vec3 copies from asset-forge). Accepts Array or PackedFloat64Array
+## of length >= 3; any other type or short array returns Vector3.ZERO (defensive).
+static func parse_vec3(v: Variant) -> Vector3:
+	if v is Array:
+		var a: Array = v as Array
+		if a.size() >= 3:
+			return Vector3(float(a[0]), float(a[1]), float(a[2]))
+		return Vector3.ZERO
+	if v is PackedFloat64Array:
+		var p: PackedFloat64Array = v as PackedFloat64Array
+		if p.size() >= 3:
+			return Vector3(p[0], p[1], p[2])
+		return Vector3.ZERO
+	return Vector3.ZERO
+
+
+## Coerce MCP JSON Array values to Godot math types matching the target property.
+## Godot's Object.set() does NOT auto-convert Array to Vector3 etc (Godot 4.7
+## verified: set("position", [0,0,-6]) is a silent no-op). Mirrors the parse_vec3
+## path that asset_placer uses for create/batch position. Returns val unchanged
+## when no coercion applies so non-math properties fall through to type_ok / Godot.
+## Fixes instance_scene properties.position / set_instance_property Vector3 set
+## (asset create/batch already worked via parse_vec3; scene tools did not).
+static func coerce_value_for_property(obj: Object, prop_name: String, val: Variant) -> Variant:
+	if val is Array:
+		var current = obj.get(prop_name)
+		if current != null:
+			match typeof(current):
+				TYPE_VECTOR2:
+					if val.size() >= 2:
+						return Vector2(float(val[0]), float(val[1]))
+				TYPE_VECTOR2I:
+					if val.size() >= 2:
+						return Vector2i(int(val[0]), int(val[1]))
+				TYPE_VECTOR3:
+					if val.size() >= 3:
+						return Vector3(float(val[0]), float(val[1]), float(val[2]))
+				TYPE_VECTOR3I:
+					if val.size() >= 3:
+						return Vector3i(int(val[0]), int(val[1]), int(val[2]))
+				TYPE_VECTOR4:
+					if val.size() >= 4:
+						return Vector4(float(val[0]), float(val[1]), float(val[2]), float(val[3]))
+				TYPE_COLOR:
+					if val.size() >= 3:
+						return Color(float(val[0]), float(val[1]), float(val[2]), float(val[3]) if val.size() > 3 else 1.0)
+				TYPE_PLANE:
+					if val.size() >= 4:
+						return Plane(float(val[0]), float(val[1]), float(val[2]), float(val[3]))
+				TYPE_QUATERNION:
+					if val.size() >= 4:
+						return Quaternion(float(val[0]), float(val[1]), float(val[2]), float(val[3]))
+	return val
+
+
+## C12: 查属性的 PROPERTY_USAGE_* flag（via get_property_list）。
+## 用于 edit_node / set_instance_property 判断属性是否只读。
+## 只读属性 undo 回放 set(prop, null) 会错误赋值（node.get 对不存在/只读属性返当前值或 null），
+## 故调用方据返回值跳过只读属性的 undo。找不到属性返 null（调用方决定处理）。
+static func _get_property_usage(obj: Object, prop: String) -> Variant:
+	for p in obj.get_property_list():
+		if String(p.get("name", "")) == prop:
+			return p.get("usage", 0)
+	return null
+
+
+## C9: 类型感知相等比较（test_assert property_equals 用）。
+## 旧实现在 test_commands.gd 用 str(val) == str(expected)，对常见场景永真返回 false：
+## - str(Vector3(1,2,3)) != str([1,2,3])：节点属性 vs JSON Array 表达
+## - str(true) != str(1)：bool vs int（语义应不等，但应可控而非 str 偶然）
+## 本 helper 显式分流：同类型直接 ==；Array↔数学类型分量比；int/float 数字宽松；其余 str fallback。
+## bool↔int 由 typeof 严格分离（TYPE_BOOL ≠ TYPE_INT）落入 str fallback，str(True)!=str(1) 返回 false（语义正确）。
+static func values_equal(val, expected) -> bool:
+	# 同类型直接 ==（含 bool==bool / int==int / Vector3==Vector3 / Array==Array 元素比）
+	if typeof(val) == typeof(expected):
+		return val == expected
+	# Array ↔ 数学类型：JSON 端常用 Array 表达 Vector/Color，分量逐一比
+	if expected is Array:
+		if val is Vector2:
+			return expected.size() == 2 and float(expected[0]) == val.x and float(expected[1]) == val.y
+		if val is Vector3:
+			return expected.size() == 3 and float(expected[0]) == val.x and float(expected[1]) == val.y and float(expected[2]) == val.z
+		if val is Vector4:
+			return expected.size() == 4 and float(expected[0]) == val.x and float(expected[1]) == val.y and float(expected[2]) == val.z and float(expected[3]) == val.w
+		if val is Color:
+			return expected.size() == 4 and float(expected[0]) == val.r and float(expected[1]) == val.g and float(expected[2]) == val.b and float(expected[3]) == val.a
+		return false
+	# int↔float 数字宽松（GDScript == 本就宽松，这里显式表达意图）
+	if typeof(val) == TYPE_INT and typeof(expected) == TYPE_FLOAT:
+		return float(val) == float(expected)
+	if typeof(val) == TYPE_FLOAT and typeof(expected) == TYPE_INT:
+		return float(val) == float(expected)
+	# 其余异类型（bool↔int / Vector3↔Dictionary / String↔int ...）退回字符串比较
+	return str(val) == str(expected)
+
+
+## editor 侧 BLOCKED_PROPERTIES —— 对齐 headless godot_operations.gd BLOCKED_PROPERTIES + TS BLOCKED_PROPS。
+## instance 额外在 coerce_property_value 内双保险拒绝（I-2: 可注入 ExtResource 实例化恶意场景 _ready）。
+const BLOCKED_PROPERTIES := [
+	"script", "owner", "process_mode", "process_priority", "process_input",
+	"process_unhandled_input", "process_unhandled_key_input", "process_internal",
+	"physics_process_mode", "physics_interpolation_mode", "name", "meta",
+	"input_event", "ready", "tree_entered", "tree_exited", "tree_exiting",
+	"instance",  # I-2: instance 可注入 ExtResource 实例化恶意场景 _ready，与 script 同级危险
+]
+
+
+## 统一 property coerce（editor 侧）。关键不对称：只 coerce 不 set（返 {"ok","value","error"}），
+## set 由 handler 经 undo 系统 do_op 执行——editor 要 per-property undo（do=set new / undo=set old），
+## helper 内置 set 会与 do_op 重复执行。与 headless _set_property_with_coerce（godot_operations.gd，
+## 内置 set 因 headless 无 per-property undo、走整场景 pack+save）刻意不对称。靠 defects.ts 双向 detect 防漂移。
+static func coerce_property_value(obj: Object, prop: String, val: Variant) -> Dictionary:
+	# 1. BLOCKED 过滤 + instance 双保险（即使漏加 BLOCKED_PROPERTIES 也拒）
+	if prop in BLOCKED_PROPERTIES or prop == "instance":
+		return {"ok": false, "value": null, "error": "Blocked property: %s" % prop}
+	# 2. 属性存在性 + 取声明类型
+	var prop_type := -1
+	for p in obj.get_property_list():
+		if String(p.get("name", "")) == prop:
+			prop_type = int(p.get("type", TYPE_NIL))
+			break
+	if prop_type == -1:
+		return {"ok": false, "value": null, "error": "Property not found: %s on %s" % [prop, obj.get_class()]}
+	# 3. 类型分支（严格对齐 headless _set_property_with_coerce 语义，消除 editor/headless 撕裂）
+	var coerced: Variant = val
+	if prop_type == TYPE_OBJECT:
+		if val is String and val.begins_with("res://"):
+			if has_path_traversal(val):
+				return {"ok": false, "value": null, "error": "Path traversal blocked: %s" % val}
+			coerced = load(val)
+			if coerced == null:
+				return {"ok": false, "value": null, "error": "Failed to load resource: %s" % val}
+		elif val is String:
+			# Resource 属性传非 res:// String → 非静默拒绝（对齐 headless，修 batch silently fail 同根因）
+			return {"ok": false, "value": null, "error": "Property %s expects Resource, got plain String '%s' (use res:// path)" % [prop, val]}
+		# val 非 String → 透传（JSON 无法表达 Resource 实例，交 Godot set 处理，与 headless 一致）
+	else:
+		# 非 TYPE_OBJECT：Array 走数学类型 coerce（Vector2/3/Color...），非 Array 透传
+		coerced = coerce_value_for_property(obj, prop, val)
+	return {"ok": true, "value": coerced, "error": ""}
+
+
+## F2(2026-07-29): property op undo 记录 helper（对齐 particle_commands.gd:19，抽到共享层供 nav/ui 复用）。
+## do=set new_val / undo=set old=target.get(prop)。append 进 do_ops/undo_ops，由 create_action_mixed commit。
+static func _record_prop(do_ops: Array, undo_ops: Array, target: Object, prop: String, new_val) -> void:
+	undo_ops.append({"type": "property", "target": target, "property": prop, "value": target.get(prop)})
+	do_ops.append({"type": "property", "target": target, "property": prop, "value": new_val})

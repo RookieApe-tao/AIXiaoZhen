@@ -1,0 +1,172 @@
+# SQLAdmin 界面中文翻译（AI小镇项目）
+# Copyright (C) 2026 ORGANIZATION
+# This file is distributed under the same license as the SQLAdmin project.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: SQLAdmin VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2026-07-19 12:27+0000\n"
+"PO-Revision-Date: 2026-08-15 00:00+0800\n"
+"Last-Translator: AiXiaoZhen\n"
+"Language-Team: zh\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#, python-format
+msgid "%(processed)s/%(total)s rows processed"
+msgstr "已处理 %(processed)s/%(total)s 行"
+
+#, python-format
+msgid "%(size)s / Page"
+msgstr "%(size)s 条 / 页"
+
+msgid "Actions"
+msgstr "操作"
+
+msgid "Apply Filter"
+msgstr "应用筛选"
+
+msgid "Cancel"
+msgstr "取消"
+
+msgid "Choose CSV file"
+msgstr "选择 CSV 文件"
+
+msgid "Clear filter"
+msgstr "清除筛选"
+
+msgid "Close"
+msgstr "关闭"
+
+msgid "Column"
+msgstr "列"
+
+msgid "Delete"
+msgstr "删除"
+
+msgid "Delete selected items"
+msgstr "删除选中项"
+
+msgid "Done"
+msgstr "完成"
+
+msgid "Download CSV"
+msgstr "下载 CSV"
+
+msgid "Download TXT"
+msgstr "下载 TXT"
+
+msgid "Edit"
+msgstr "编辑"
+
+#, python-format
+msgid "Edit %(name)s"
+msgstr "编辑 %(name)s"
+
+msgid "Enter username"
+msgstr "输入用户名"
+
+msgid "Export"
+msgstr "导出"
+
+msgid "Filters"
+msgstr "筛选"
+
+msgid "Go Back"
+msgstr "返回"
+
+msgid "Import"
+msgstr "导入"
+
+msgid "Import CSV"
+msgstr "导入 CSV"
+
+msgid "Import progress"
+msgstr "导入进度"
+
+msgid "Import result"
+msgstr "导入结果"
+
+msgid "Language"
+msgstr "语言"
+
+msgid "Login"
+msgstr "登录"
+
+#, python-format
+msgid "Login to %(title)s"
+msgstr "登录 %(title)s"
+
+msgid "Logout"
+msgstr "退出登录"
+
+msgid "Missed rows"
+msgstr "跳过的行"
+
+#, python-format
+msgid "New %(name)s"
+msgstr "新建 %(name)s"
+
+msgid "No file selected"
+msgstr "未选择文件"
+
+msgid "Password"
+msgstr "密码"
+
+msgid "Please confirm"
+msgstr "请确认"
+
+msgid "Refresh list"
+msgstr "刷新列表"
+
+msgid "Save"
+msgstr "保存"
+
+msgid "Save and add another"
+msgstr "保存并新增"
+
+msgid "Save and continue editing"
+msgstr "保存并继续编辑"
+
+msgid "Save as new"
+msgstr "另存为新记录"
+
+msgid "Search"
+msgstr "搜索"
+
+msgid "Select all"
+msgstr "全选"
+
+msgid "Select item"
+msgstr "选择"
+
+msgid "Show"
+msgstr "显示"
+
+#, python-format
+msgid "Showing %(start)s to %(end)s of %(count)s items"
+msgstr "显示第 %(start)s 至 %(end)s 条，共 %(count)s 条"
+
+msgid "Skip invalid rows and continue import"
+msgstr "跳过无效行并继续导入"
+
+msgid "Username"
+msgstr "用户名"
+
+msgid "Value"
+msgstr "值"
+
+msgid "View"
+msgstr "查看"
+
+msgid "Yes"
+msgstr "是"
+
+msgid "next"
+msgstr "下一页"
+
+msgid "prev"
+msgstr "上一页"

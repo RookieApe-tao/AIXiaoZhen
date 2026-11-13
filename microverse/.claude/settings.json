@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "godot": {
+      "command": "npx",
+      "args": [
+        "godot-mcp-enhanced"
+      ],
+      "env": {
+        "GODOT_PATH": "D:/Godot/Godot_v4.7.1-stable_win64.exe"
+      }
+    }
+  }
+}

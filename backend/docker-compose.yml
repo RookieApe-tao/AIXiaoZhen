@@ -1,0 +1,26 @@
+# AI小镇 · 开发环境（PostgreSQL+pgvector；管理后台 sqladmin 挂在 FastAPI，无需独立容器）
+# 用法：docker compose up -d
+# 建表由后端代码 startup 自动完成（Base.metadata.create_all）
+
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: aixiaozhen-pg
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: aixiaozhen
+      POSTGRES_PASSWORD: aixiaozhen_dev   # ponytail: 开发明文密码，生产换 secret
+      POSTGRES_DB: aixiaozhen
+      TZ: Asia/Shanghai                   # 容器系统时区；DB session timezone 另由 ALTER DATABASE 设（psycopg 按 session tz 返回时间）
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U aixiaozhen -d aixiaozhen"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  pgdata:

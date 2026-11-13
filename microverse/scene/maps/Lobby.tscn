@@ -1,0 +1,701 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://script/net/Lobby.gd" id="1_lb"]
+[ext_resource type="Texture2D" uid="uid://2fgaeuwj8rds" path="res://asset/pics/Cover.png" id="2_cover"]
+
+[node name="Lobby" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_lb")
+
+[node name="LoginPanel" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Bg" type="TextureRect" parent="LoginPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("2_cover")
+stretch_mode = 6
+expand_mode = 1
+
+[node name="Dim" type="ColorRect" parent="LoginPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.04, 0.06, 0.12, 0.55)
+
+[node name="Center" type="CenterContainer" parent="LoginPanel"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBox" type="VBoxContainer" parent="LoginPanel/Center"]
+layout_mode = 2
+custom_minimum_size = Vector2(460, 0)
+theme_override_constants/separation = 12
+
+[node name="Title" type="Label" parent="LoginPanel/Center/VBox"]
+layout_mode = 2
+text = "AI 小镇"
+horizontal_alignment = 1
+
+[node name="username_edit" type="LineEdit" parent="LoginPanel/Center/VBox"]
+layout_mode = 2
+placeholder_text = "用户名"
+custom_minimum_size = Vector2(0, 44)
+
+[node name="password_edit" type="LineEdit" parent="LoginPanel/Center/VBox"]
+layout_mode = 2
+placeholder_text = "密码"
+secret = true
+custom_minimum_size = Vector2(0, 44)
+
+[node name="opt_row" type="HBoxContainer" parent="LoginPanel/Center/VBox"]
+layout_mode = 2
+
+[node name="remember_chk" type="CheckBox" parent="LoginPanel/Center/VBox/opt_row"]
+layout_mode = 2
+text = "记住密码"
+
+[node name="spacer" type="Control" parent="LoginPanel/Center/VBox/opt_row"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="auto_chk" type="CheckBox" parent="LoginPanel/Center/VBox/opt_row"]
+layout_mode = 2
+text = "自动登录"
+
+[node name="login_btn" type="Button" parent="LoginPanel/Center/VBox"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 48)
+text = "登录"
+
+[node name="auth_status" type="Label" parent="LoginPanel/Center/VBox"]
+layout_mode = 2
+horizontal_alignment = 1
+theme_override_colors/font_color = Color(0.95, 0.32, 0.32, 1)
+
+[node name="hint" type="Label" parent="LoginPanel/Center/VBox"]
+layout_mode = 2
+text = "没有账号？请联系管理员注册"
+horizontal_alignment = 1
+
+[node name="LobbyPanel" type="Control" parent="."]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Margin" type="MarginContainer" parent="LobbyPanel"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 16
+
+[node name="VBox" type="VBoxContainer" parent="LobbyPanel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="top_bar" type="HBoxContainer" parent="LobbyPanel/Margin/VBox"]
+layout_mode = 2
+
+[node name="char_mgmt_btn" type="Button" parent="LobbyPanel/Margin/VBox/top_bar"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 40)
+text = "角色管理"
+
+[node name="ai_btn" type="Button" parent="LobbyPanel/Margin/VBox/top_bar"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 40)
+text = "AI 设置"
+
+[node name="help_btn" type="Button" parent="LobbyPanel/Margin/VBox/top_bar"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 40)
+text = "？"
+
+[node name="spacer" type="Control" parent="LobbyPanel/Margin/VBox/top_bar"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="welcome_lbl" type="Label" parent="LobbyPanel/Margin/VBox/top_bar"]
+layout_mode = 2
+
+[node name="logout_btn" type="Button" parent="LobbyPanel/Margin/VBox/top_bar"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 40)
+text = "退出登录"
+
+[node name="body" type="HBoxContainer" parent="LobbyPanel/Margin/VBox"]
+layout_mode = 3
+size_flags_vertical = 3
+
+[node name="left" type="VBoxContainer" parent="LobbyPanel/Margin/VBox/body"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 3.0
+theme_override_constants/separation = 6
+
+[node name="TownLabel" type="Label" parent="LobbyPanel/Margin/VBox/body/left"]
+layout_mode = 2
+text = "小镇列表"
+
+[node name="town_btn_row" type="HBoxContainer" parent="LobbyPanel/Margin/VBox/body/left"]
+layout_mode = 2
+
+[node name="town_refresh_btn" type="Button" parent="LobbyPanel/Margin/VBox/body/left/town_btn_row"]
+layout_mode = 2
+text = "刷新"
+
+[node name="create_town_btn" type="Button" parent="LobbyPanel/Margin/VBox/body/left/town_btn_row"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "创建小镇"
+
+[node name="town_list" type="ItemList" parent="LobbyPanel/Margin/VBox/body/left"]
+layout_mode = 3
+size_flags_vertical = 3
+custom_minimum_size = Vector2(0, 200)
+select_mode = 0
+
+[node name="right" type="PanelContainer" parent="LobbyPanel/Margin/VBox/body"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 1.0
+custom_minimum_size = Vector2(320, 0)
+
+[node name="Margin" type="MarginContainer" parent="LobbyPanel/Margin/VBox/body/right"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 14
+theme_override_constants/margin_top = 14
+theme_override_constants/margin_right = 14
+theme_override_constants/margin_bottom = 14
+
+[node name="VBox" type="VBoxContainer" parent="LobbyPanel/Margin/VBox/body/right/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="PreviewTitle" type="Label" parent="LobbyPanel/Margin/VBox/body/right/Margin/VBox"]
+layout_mode = 2
+text = "小镇预览"
+
+[node name="town_preview" type="RichTextLabel" parent="LobbyPanel/Margin/VBox/body/right/Margin/VBox"]
+layout_mode = 3
+size_flags_vertical = 3
+size_flags_stretch_ratio = 2.0
+bbcode_enabled = true
+custom_minimum_size = Vector2(0, 160)
+text = "选择左侧小镇查看详情"
+
+[node name="sep" type="HSeparator" parent="LobbyPanel/Margin/VBox/body/right/Margin/VBox"]
+layout_mode = 2
+
+[node name="CarryLabel" type="Label" parent="LobbyPanel/Margin/VBox/body/right/Margin/VBox"]
+layout_mode = 2
+text = "带入小镇的角色（多选）"
+
+[node name="npc_itemlist" type="ItemList" parent="LobbyPanel/Margin/VBox/body/right/Margin/VBox"]
+layout_mode = 3
+size_flags_vertical = 3
+size_flags_stretch_ratio = 1.0
+custom_minimum_size = Vector2(0, 100)
+select_mode = 1
+
+[node name="bottom" type="HBoxContainer" parent="LobbyPanel/Margin/VBox"]
+layout_mode = 2
+
+[node name="town_status" type="Label" parent="LobbyPanel/Margin/VBox/bottom"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="enter_town_btn" type="Button" parent="LobbyPanel/Margin/VBox/bottom"]
+layout_mode = 2
+custom_minimum_size = Vector2(160, 44)
+disabled = true
+text = "进入小镇"
+
+[node name="char_mgmt_panel" type="Panel" parent="."]
+visible = false
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -280.0
+offset_top = -240.0
+offset_right = 280.0
+offset_bottom = 240.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Margin" type="MarginContainer" parent="char_mgmt_panel"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = 12.0
+offset_right = -16.0
+offset_bottom = -12.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 12
+
+[node name="VBox" type="VBoxContainer" parent="char_mgmt_panel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Title" type="Label" parent="char_mgmt_panel/Margin/VBox"]
+layout_mode = 2
+text = "角色管理"
+
+[node name="hint" type="Label" parent="char_mgmt_panel/Margin/VBox"]
+layout_mode = 2
+text = "选中一个角色可编辑"
+
+[node name="mgmt_list" type="ItemList" parent="char_mgmt_panel/Margin/VBox"]
+layout_mode = 3
+size_flags_vertical = 3
+select_mode = 0
+
+[node name="btn_row" type="HBoxContainer" parent="char_mgmt_panel/Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="refresh_btn" type="Button" parent="char_mgmt_panel/Margin/VBox/btn_row"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "刷新"
+
+[node name="create_btn" type="Button" parent="char_mgmt_panel/Margin/VBox/btn_row"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "新建角色"
+
+[node name="edit_btn" type="Button" parent="char_mgmt_panel/Margin/VBox/btn_row"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "编辑角色"
+
+[node name="preset_btn" type="Button" parent="char_mgmt_panel/Margin/VBox/btn_row"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "生成预设 NPC"
+
+[node name="delete_btn" type="Button" parent="char_mgmt_panel/Margin/VBox/btn_row"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "删除角色"
+
+[node name="close_btn" type="Button" parent="char_mgmt_panel/Margin/VBox/btn_row"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "关闭"
+
+[node name="char_panel" type="Panel" parent="."]
+visible = false
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -300.0
+offset_top = -280.0
+offset_right = 300.0
+offset_bottom = 280.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Scroll" type="ScrollContainer" parent="char_panel"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = 12.0
+offset_right = -16.0
+offset_bottom = -12.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBox" type="VBoxContainer" parent="char_panel/Scroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 6
+
+[node name="panel_title" type="Label" parent="char_panel/Scroll/VBox"]
+layout_mode = 2
+text = "角色"
+
+[node name="NameLabel" type="Label" parent="char_panel/Scroll/VBox"]
+layout_mode = 2
+text = "名字"
+
+[node name="name_edit" type="LineEdit" parent="char_panel/Scroll/VBox"]
+layout_mode = 2
+placeholder_text = "角色名（必填）"
+custom_minimum_size = Vector2(0, 36)
+
+[node name="PositionLabel" type="Label" parent="char_panel/Scroll/VBox"]
+layout_mode = 2
+text = "职位"
+
+[node name="position_edit" type="LineEdit" parent="char_panel/Scroll/VBox"]
+layout_mode = 2
+placeholder_text = "职位，如：前端开发实习生"
+custom_minimum_size = Vector2(0, 36)
+
+[node name="GenderLabel" type="Label" parent="char_panel/Scroll/VBox"]
+layout_mode = 2
+text = "性别"
+
+[node name="gender_opt" type="OptionButton" parent="char_panel/Scroll/VBox"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 36)
+[node name="PersonalityLabel" type="Label" parent="char_panel/Scroll/VBox"]
+layout_mode = 2
+text = "性格"
+
+[node name="personality_edit" type="TextEdit" parent="char_panel/Scroll/VBox"]
+layout_mode = 2
+placeholder_text = "如：元气满满但毛手毛脚，崇拜 Alice 的设计能力"
+custom_minimum_size = Vector2(0, 80)
+wrap_mode = 2
+
+[node name="SpeakingLabel" type="Label" parent="char_panel/Scroll/VBox"]
+layout_mode = 2
+text = "说话风格"
+
+[node name="speaking_style_edit" type="TextEdit" parent="char_panel/Scroll/VBox"]
+layout_mode = 2
+placeholder_text = "如：语速超快，爱用网络热梗，开口就是「绝绝子」"
+custom_minimum_size = Vector2(0, 80)
+wrap_mode = 2
+
+[node name="DutiesLabel" type="Label" parent="char_panel/Scroll/VBox"]
+layout_mode = 2
+text = "工作职责"
+
+[node name="work_duties_edit" type="TextEdit" parent="char_panel/Scroll/VBox"]
+layout_mode = 2
+placeholder_text = "如：切图、修 CSS bug、给 Alice 买咖啡"
+custom_minimum_size = Vector2(0, 80)
+wrap_mode = 2
+
+[node name="HabitsLabel" type="Label" parent="char_panel/Scroll/VBox"]
+layout_mode = 2
+text = "工作习惯"
+
+[node name="work_habits_edit" type="TextEdit" parent="char_panel/Scroll/VBox"]
+layout_mode = 2
+placeholder_text = "如：工位贴满动漫便利贴，午休拉着 Joe 讲冷笑话"
+custom_minimum_size = Vector2(0, 80)
+wrap_mode = 2
+
+[node name="NotesLabel" type="Label" parent="char_panel/Scroll/VBox"]
+layout_mode = 2
+text = "补充设定（可选，补充以上字段没有的细节）"
+
+[node name="notes_edit" type="TextEdit" parent="char_panel/Scroll/VBox"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 100)
+wrap_mode = 2
+
+[node name="btn_row" type="HBoxContainer" parent="char_panel/Scroll/VBox"]
+layout_mode = 2
+
+[node name="ai_optimize_btn" type="Button" parent="char_panel/Scroll/VBox/btn_row"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "AI 优化"
+
+[node name="panel_save_btn" type="Button" parent="char_panel/Scroll/VBox/btn_row"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "保存"
+
+[node name="cancel_btn" type="Button" parent="char_panel/Scroll/VBox/btn_row"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "取消"
+
+[node name="town_panel" type="Panel" parent="."]
+visible = false
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -300.0
+offset_top = -340.0
+offset_right = 300.0
+offset_bottom = 340.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Scroll" type="ScrollContainer" parent="town_panel"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = 12.0
+offset_right = -16.0
+offset_bottom = -12.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBox" type="VBoxContainer" parent="town_panel/Scroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 6
+
+[node name="Title" type="Label" parent="town_panel/Scroll/VBox"]
+layout_mode = 2
+text = "创建小镇"
+
+[node name="NameLabel" type="Label" parent="town_panel/Scroll/VBox"]
+layout_mode = 2
+text = "小镇名称"
+
+[node name="town_name_edit" type="LineEdit" parent="town_panel/Scroll/VBox"]
+layout_mode = 2
+placeholder_text = "给小镇起个名字"
+custom_minimum_size = Vector2(0, 36)
+
+[node name="DescLabel" type="Label" parent="town_panel/Scroll/VBox"]
+layout_mode = 2
+text = "描述（可选）"
+
+[node name="town_desc_edit" type="TextEdit" parent="town_panel/Scroll/VBox"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 100)
+wrap_mode = 2
+
+[node name="PresetLabel" type="Label" parent="town_panel/Scroll/VBox"]
+layout_mode = 2
+text = "地图预设"
+
+[node name="town_preset_option" type="OptionButton" parent="town_panel/Scroll/VBox"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 36)
+
+[node name="Sep1" type="HSeparator" parent="town_panel/Scroll/VBox"]
+layout_mode = 2
+
+[node name="ParamLabel" type="Label" parent="town_panel/Scroll/VBox"]
+layout_mode = 2
+text = "玩法参数"
+
+[node name="param_row" type="HBoxContainer" parent="town_panel/Scroll/VBox"]
+layout_mode = 2
+
+[node name="RoundsLabel" type="Label" parent="town_panel/Scroll/VBox/param_row"]
+layout_mode = 2
+text = "互聊轮数:"
+
+[node name="chat_rounds_edit" type="LineEdit" parent="town_panel/Scroll/VBox/param_row"]
+layout_mode = 2
+placeholder_text = "8"
+text = "8"
+custom_minimum_size = Vector2(60, 0)
+
+[node name="MaxLabel" type="Label" parent="town_panel/Scroll/VBox/param_row"]
+layout_mode = 2
+text = "NPC上限:"
+
+[node name="max_npcs_edit" type="LineEdit" parent="town_panel/Scroll/VBox/param_row"]
+layout_mode = 2
+placeholder_text = "20"
+text = "20"
+custom_minimum_size = Vector2(60, 0)
+
+[node name="Sep2" type="HSeparator" parent="town_panel/Scroll/VBox"]
+layout_mode = 2
+
+[node name="DirectorLabel" type="Label" parent="town_panel/Scroll/VBox"]
+layout_mode = 2
+text = "导演工作台（世界观，可留空，进镇后还能改）"
+
+[node name="WorldBgLabel" type="Label" parent="town_panel/Scroll/VBox"]
+layout_mode = 2
+text = "世界背景"
+
+[node name="world_bg_edit" type="TextEdit" parent="town_panel/Scroll/VBox"]
+layout_mode = 2
+placeholder_text = "这个世界的大致设定、时代、基调……"
+custom_minimum_size = Vector2(0, 100)
+wrap_mode = 2
+
+[node name="CompanyLabel" type="Label" parent="town_panel/Scroll/VBox"]
+layout_mode = 2
+text = "公司信息"
+
+[node name="company_edit" type="TextEdit" parent="town_panel/Scroll/VBox"]
+layout_mode = 2
+placeholder_text = "主要公司/组织的背景、业务……"
+custom_minimum_size = Vector2(0, 100)
+wrap_mode = 2
+
+[node name="SocialLabel" type="Label" parent="town_panel/Scroll/VBox"]
+layout_mode = 2
+text = "社会规则"
+
+[node name="social_edit" type="TextEdit" parent="town_panel/Scroll/VBox"]
+layout_mode = 2
+placeholder_text = "这个世界的法则、潜规则、怪谈约束……"
+custom_minimum_size = Vector2(0, 100)
+wrap_mode = 2
+
+[node name="Sep3" type="HSeparator" parent="town_panel/Scroll/VBox"]
+layout_mode = 2
+
+[node name="ItemsLabel" type="Label" parent="town_panel/Scroll/VBox"]
+layout_mode = 2
+text = "NPC 初始物品（每行一个，格式：物品名 或 物品名 x数量）"
+
+[node name="items_edit" type="TextEdit" parent="town_panel/Scroll/VBox"]
+layout_mode = 2
+placeholder_text = "手机
+钱包 x1
+咖啡 x3"
+custom_minimum_size = Vector2(0, 100)
+wrap_mode = 2
+
+[node name="btn_row" type="HBoxContainer" parent="town_panel/Scroll/VBox"]
+layout_mode = 2
+
+[node name="town_save_btn" type="Button" parent="town_panel/Scroll/VBox/btn_row"]
+layout_mode = 2
+text = "创建"
+
+[node name="cancel_btn" type="Button" parent="town_panel/Scroll/VBox/btn_row"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "取消"
+
+[node name="ai_panel" type="Panel" parent="."]
+visible = false
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -310.0
+offset_top = -240.0
+offset_right = 310.0
+offset_bottom = 240.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Margin" type="MarginContainer" parent="ai_panel"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = 12.0
+offset_right = -16.0
+offset_bottom = -12.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 12
+
+[node name="VBox" type="VBoxContainer" parent="ai_panel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Title" type="Label" parent="ai_panel/Margin/VBox"]
+layout_mode = 2
+text = "AI 设置（BYOK）"
+
+[node name="TypeLabel" type="Label" parent="ai_panel/Margin/VBox"]
+layout_mode = 2
+text = "接口类型"
+
+[node name="ai_type_opt" type="OptionButton" parent="ai_panel/Margin/VBox"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 36)
+
+[node name="ModelLabel" type="Label" parent="ai_panel/Margin/VBox"]
+layout_mode = 2
+text = "模型"
+
+[node name="ai_model_edit" type="LineEdit" parent="ai_panel/Margin/VBox"]
+layout_mode = 2
+placeholder_text = "如 qwen-plus / gpt-4o-mini"
+custom_minimum_size = Vector2(0, 36)
+
+[node name="KeyLabel" type="Label" parent="ai_panel/Margin/VBox"]
+layout_mode = 2
+text = "API Key"
+
+[node name="ai_key_edit" type="LineEdit" parent="ai_panel/Margin/VBox"]
+layout_mode = 2
+placeholder_text = "你的 API Key（加密存后台）"
+secret = true
+custom_minimum_size = Vector2(0, 36)
+
+[node name="UrlLabel" type="Label" parent="ai_panel/Margin/VBox"]
+visible = false
+layout_mode = 2
+text = "请求地址"
+
+[node name="ai_url_edit" type="LineEdit" parent="ai_panel/Margin/VBox"]
+visible = false
+layout_mode = 2
+placeholder_text = "如 https://api.example.com/v1/chat/completions"
+custom_minimum_size = Vector2(0, 36)
+
+[node name="hint" type="Label" parent="ai_panel/Margin/VBox"]
+layout_mode = 2
+text = "保存后同步到你的账号（AES 加密），换设备自动恢复。"
+
+[node name="btn_row" type="HBoxContainer" parent="ai_panel/Margin/VBox"]
+layout_mode = 2
+
+[node name="ai_save_btn" type="Button" parent="ai_panel/Margin/VBox/btn_row"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "保存"
+
+[node name="cancel_btn" type="Button" parent="ai_panel/Margin/VBox/btn_row"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "取消"

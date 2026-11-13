@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Texture2D" path="res://asset/singleObjects/office_objects/Modern_Office_Singles_32x32_320.png" id="1_cm"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_cm"]
+size = Vector2(32, 32)
+
+[node name="CoffeeMachine" type="StaticBody2D"]
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(16, -24)
+texture = ExtResource("1_cm")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_cm")

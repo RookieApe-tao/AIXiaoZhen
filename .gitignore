@@ -1,0 +1,13 @@
+# Godot 编辑器生成物（含 microverse/.godot，microverse 已纳入主仓库）
+.godot/
+
+# Python（backend/）
+__pycache__/
+*.pyc
+.venv/
+.env
+
+# 本机密钥与日志（勿提交）
+apikey.txt
+sk-*.txt
+*.log

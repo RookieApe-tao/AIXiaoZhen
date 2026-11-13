@@ -18,5 +18,5 @@
 - **涉及**：`microverse/.git`、`.gitignore`、git push/merge 命令。
 
 ## 遗留风险备忘
-- `sk-REDACTED.txt`：疑似明文 API Key 文件留在项目根目录，建议移入 `.env` 或环境变量并删除该文件，且不要提交到任何仓库。
+- 根目录曾遗留一个名为 `sk-*.txt` 的明文 API Key 文件（key 已轮换并移入 `.env`），此类密钥切勿提交到任何仓库。
 - 删除 `.git` 后项目无版本控制，如需恢复历史请从远端（GitHub, SSH）重新 clone 或 `git init` 后推送。
